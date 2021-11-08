@@ -357,7 +357,13 @@ app.controller('myCtrl', function($scope) {
 			};
 		};
 		if (did_change) $scope.refresh_possibles();
-		res_class+="bg-danger-light";
+		if (($scope.cell_helper|$scope.super_cell_helper)&
+			($scope.dic_grid[$rind][$ind]["possibles"].length==0)) {
+			res_class+="bg-wrong";// Todo: stays red if helper removed meanwhile
+		}
+		else {
+			res_class+="bg-danger-light";
+		}
 		// console.log(res_class);		
 		return res_class;
 	};
@@ -405,7 +411,6 @@ app.controller('myCtrl', function($scope) {
 	$scope.toggle_autofill = function() {
 		if (!$scope.autofill) $scope.clean_hyp(false);
 		$scope.refresh_possibles();
-
 	};
 
 	// update possibles
@@ -760,6 +765,26 @@ app.controller('myCtrl', function($scope) {
 			}
 		}
 		$scope.shown_sol_tab = false;
+
+        // refresh cell possibilities after import
+		for (var i = 0; i < 9; i++) {
+			for (var j = 0; j <9; j++) {
+				$scope.dic_grid[i][j]["pos_init"]=[1,2,3,4,5,6,7,8,9];
+				if ($scope.matrix_grid_current[i][j]==0){
+					$scope.dic_grid[i][j]["possibles"]=[1,2,3,4,5,6,7,8,9];
+				} else {
+					$scope.dic_grid[i][j]["possibles"]=[];
+				};
+				// $scope["input"+i+j]="";
+			}
+		};
+
+        $scope.refresh_possibles_init();
+        $scope.refresh_possibles();
+
+		// console.log($scope.dic_grid[0][3]["possibles"]);
+		// console.log($scope.dic_grid[0][3]["pos_init"]);
+
 	};
 
 	// set a given sudoku from a string
